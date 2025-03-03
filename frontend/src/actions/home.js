@@ -26,6 +26,11 @@ export const editProfile = (profile) => async dispatch => {
             payload: res.data.user
         });
 
+        await dispatch({
+            type: AUTH.MODIFY_USER,
+            payload: res.data.user
+        });
+
         await dispatch(setAlert(res.data.msg, 'success'));
     } catch (error) {
         if(error?.response?.data?.msg) {

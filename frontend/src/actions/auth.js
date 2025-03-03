@@ -80,6 +80,13 @@ export const loadUser = () => async dispatch => {
     }
 }
 
+export const modifyUser = (option) => dispatch => {
+    dispatch({
+        type: AUTH.MODIFY_USER,
+        payload: option
+    });
+}
+
 // LOGOUT
 export const logout = () => dispatch => {
     dispatch({

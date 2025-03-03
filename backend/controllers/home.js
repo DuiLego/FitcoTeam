@@ -149,7 +149,7 @@ const getMessages = async (req, res) => {
                 }
             ],
             order: [
-                ['date', 'DESC']
+                ['date', 'ASC']
             ]
         });
 

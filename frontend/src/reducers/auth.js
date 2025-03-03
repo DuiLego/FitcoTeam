@@ -5,7 +5,8 @@ import setAuthToken from '../utils/setAuthToken';
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: false,
-    user: null
+    user: null, 
+    user_modified: null
 }
 
 export default (state = initialState, action) => {
@@ -40,6 +41,12 @@ export default (state = initialState, action) => {
                 ...state,
                 isAuthenticated: true,
                 user: payload
+            };
+
+        case AUTH.MODIFY_USER:
+            return {
+                ...state,
+                user_modified: payload
             };
 
         default:

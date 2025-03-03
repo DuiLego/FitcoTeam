@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { MessageList } from 'react-chat-elements';
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
+import { MessageList, MessageBox } from 'react-chat-elements';
+import "react-chat-elements/dist/main.css"
 
 import { setAlert } from '../../actions/alert';
-import { logout } from '../../actions/auth';
+import { logout, modifyUser } from '../../actions/auth';
 import { showProfile, getMessages } from '../../actions/home';
 
 import Profile from './Profile';
@@ -15,7 +16,7 @@ const socket = io(process.env.REACT_APP_API_ROUTE);
 const Home = () => {
     const dispatch = useDispatch();
 
-    const user = useSelector(state => state.auth.user);
+    const { user, user_modified } = useSelector(state => state.auth);
     const { messages } = useSelector(state => state.home);
 
     const [conversationData, setConversationData] = useState([]);
@@ -66,17 +67,39 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        if(user){
+        if (user) {
             socket.on('receiveMessage', (message) => {
-                setConversationData([
-                    ...conversationData, 
-                    {
-                        ...message, 
-                        position: message.user.id == user.id ? 'right' : 'left'
+                setConversationData((previousMessages) => {
+                    const message_exists = previousMessages.some(current => current.id == message.id);
+    
+                    if (!message_exists) {
+                        return [...previousMessages, {
+                            ...message,
+                            position: message.user.id === user.id ? 'right' : 'left',
+                        }];
                     }
-                ]);
+
+                    return previousMessages;
+                });
             });
 
+            socket.on('modifyMessages', (user) => {
+                setConversationData((previousMessages) => {
+                    const updatedMessages = previousMessages.map((current) => {
+                        if (current.user.id == user.id) {
+                            return {
+                                ...current,
+                                title: user.name
+                            };
+                        }
+
+                        return current;
+                    });
+            
+                    return updatedMessages;
+                });
+            });            
+    
             socket.emit('register', user);
         }
     }, [user]);
@@ -88,6 +111,14 @@ const Home = () => {
     }, [messages]);
 
     useEffect(() => {
+        if (user_modified) {    
+            socket.emit('changeUser', user_modified);
+
+            dispatch(modifyUser(null));
+        }
+    }, [user_modified]);
+
+    useEffect(() => {
         if(containerRef && containerRef.current){
             const element = containerRef.current;
             element.scroll({
@@ -96,7 +127,7 @@ const Home = () => {
                 behavior: "smooth"
             });
         }
-    }, [containerRef, conversationData]);
+    }, [containerRef, conversationData, messages]);
 
     return (
         <Fragment>
@@ -152,13 +183,27 @@ const Home = () => {
                             </div>
 
                             <div className="body_conversacion" ref={containerRef}>
-                                <MessageList
+                                {/* <MessageList
                                     id="chat" 
                                     className="message-list"
                                     lockable={true}
                                     toBottomHeight={'100%'}
-                                    dataSource={conversationData}
-                                />
+                                    dataSource={[]}
+                                > */}
+                                    {
+                                        conversationData?.map((message) => (
+                                            <MessageBox
+                                                key={message.id}
+                                                type={message.type}
+                                                position={message.position}
+                                                text={message.text}
+                                                title={message.user.name}
+                                                date={message.date}
+                                                avatar={message.user.id != user.id ? process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png' : null}
+                                            />
+                                        ))
+                                    }
+                                {/* </MessageList> */}
                             </div>
                             
                             <div className="footer_conversacion">

@@ -16,6 +16,12 @@ io.on('connection', (socket) => {
             }
         });
     });
+
+    socket.on('changeUser', (user) => {
+        if(user){
+            io.to('fitco').emit('modifyMessages', user);
+        }
+    });
   
     socket.on('disconnect', () => {
         socket.leave('fitco');
