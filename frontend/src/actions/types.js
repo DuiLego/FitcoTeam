@@ -4,6 +4,12 @@ export const ALERT = {
     REMOVE: 'REMOVE_ALERT'
 };
 
+// Loader
+export const LOADER = {
+    SHOW: 'SHOW_LOADER',
+    HIDE: 'HIDE_LOADER'
+};
+
 // Auth
 export const AUTH = {
     LOGIN: 'LOGIN',

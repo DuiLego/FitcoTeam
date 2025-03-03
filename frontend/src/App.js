@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 /* Components */
 import Alert from './components/layout/Alert';
+import Loader from './components/layout/Loader';
 import NoMatch from './components/routing/NoMatch';
 import ValidateSession from './components/routing/ValidateSession';
 import PrivateRoute from './components/routing/PrivateRoute';
@@ -35,8 +36,9 @@ function App() {
 		<Provider store={store}>
 			<BrowserRouter>
 				<Fragment>
-					<section className="container-fluid principal-section">
+					<section className="principal-section">
 						<Alert></Alert>
+						<Loader></Loader>
 						
 						<Routes>
 							{/* Log-in */}

@@ -109,6 +109,18 @@ const editProfile = async (req, res) => {
 
             if(req.files != null){
                 if('profile' in req.files){
+                    let url_profile_list = await getList({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Prefix: user.id + '/'
+                    });
+        
+                    for(var i = 0; i < url_profile_list?.Contents?.length; i++){
+                        await deleteFile({
+                            Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                            Key: url_profile_list.Contents[i].Key,
+                        });
+                    }
+
                     let extension_file = path.extname(req.files.profile.name);
 
                     await uploadFile({
@@ -124,10 +136,10 @@ const editProfile = async (req, res) => {
                 Prefix: user.id + '/profile',
             });
 
-            user.url = null;
+            user.avatar = null;
 
             if(url_profile_list?.Contents.length > 0){
-                user.url = await getURL({
+                user.avatar = await getURL({
                     Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
                     Key: url_profile_list?.Contents[0].Key
                 });
@@ -145,6 +157,18 @@ const editProfile = async (req, res) => {
 
                     user = user.get({ plain: true });
                     delete user.password;
+
+                    let url_profile_list = await getList({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Prefix: user.id + '/'
+                    });
+        
+                    for(var i = 0; i < url_profile_list?.Contents?.length; i++){
+                        await deleteFile({
+                            Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                            Key: url_profile_list.Contents[i].Key,
+                        });
+                    }
                     
                     let extension_file = path.extname(req.files.profile.name);
 
@@ -154,15 +178,15 @@ const editProfile = async (req, res) => {
                         Body: req.files.profile.data
                     });
 
-                    let url_profile_list = await getList({
+                    url_profile_list = await getList({
                         Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
                         Prefix: user.id + '/profile',
                     });
         
-                    user.url = null;
+                    user.avatar = null;
         
                     if(url_profile_list?.Contents.length > 0){
-                        user.url = await getURL({
+                        user.avatar = await getURL({
                             Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
                             Key: url_profile_list?.Contents[0].Key
                         });
@@ -224,17 +248,44 @@ const getMessages = async (req, res) => {
             ]
         });
 
+        let users = new Map();
+
         let formated_messages = [];
 
         for(var i = 0; i < messages.length; i++){
             messages[i] = messages[i].get({ plain: true });
 
             if(messages[i].sender){
+                let url_avatar = null;
+
+                if (!users.has(messages[i].sender.id)) {
+                    let url_profile_list = await getList({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Prefix: messages[i].sender.id + '/profile',
+                    });
+        
+                    if(url_profile_list?.Contents.length > 0){
+                        url_avatar = await getURL({
+                            Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                            Key: url_profile_list?.Contents[0].Key
+                        });
+                    }
+
+                    users.set(messages[i].sender.id, {
+                        ...messages[i].sender, 
+                        avatar: url_avatar
+                    });
+                }else{
+                    let existing_user = users.get(messages[i].sender.id);
+
+                    url_avatar = existing_user.avatar;
+                }
+
                 formated_messages.push({
                     id: messages[i].id, 
                     user: {
                         ...messages[i].sender,
-                        avatar: null
+                        avatar: url_avatar
                     }, 
                     position: messages[i].sender.id == req.user.id ? 'right' : 'left', 
                     type: 'text', 
@@ -291,13 +342,14 @@ const sendMessage = async ({user, messageData}) => {
                     'user': {
                         'id': user.id,
                         'name': user.name,
-                        'avatar': null
+                        'avatar': user.avatar
                     },
                     'position': null,
                     'type': 'text',
                     'title': user.name, 
                     'text': message.text, 
-                    'date': message.date
+                    'date': message.date, 
+                    'avatar': user.avatar
                 }
             };
         }else{

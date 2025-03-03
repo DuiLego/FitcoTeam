@@ -3,10 +3,10 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken';
 
 import { setAlert } from './alert';
+import { changeLoader } from './loader';
 
 import { AUTH } from './types';
 
-// LOGIN USER
 export const login = (user) => async dispatch => {
     const config = {
         headers: {
@@ -16,13 +16,17 @@ export const login = (user) => async dispatch => {
     const body = JSON.stringify(user);
 
     try {
+        await dispatch(changeLoader(true));
         const res = await axios.post(`${process.env.REACT_APP_API_ROUTE}/auth/login`, body, config);
+        await dispatch(changeLoader(false));
 
         dispatch({
             type: AUTH.LOGIN,
             payload: res.data
         });
     } catch (error) {
+        await dispatch(changeLoader(false));
+
         if(error?.response?.data?.msg) {
             dispatch(setAlert(error?.response?.data?.msg, 'danger'));
         }
@@ -33,7 +37,6 @@ export const login = (user) => async dispatch => {
     }
 }
 
-// SIGNUP USER
 export const signup = (user) => async dispatch => {
     const config = {
         headers: {
@@ -43,13 +46,17 @@ export const signup = (user) => async dispatch => {
     const body = JSON.stringify(user);
 
     try {
+        await dispatch(changeLoader(true));
         const res = await axios.post(`${process.env.REACT_APP_API_ROUTE}/auth/signup`, body, config);
+        await dispatch(changeLoader(false));
 
         dispatch({
             type: AUTH.SIGNUP,
             payload: res.data
         });
     } catch (error) {
+        await dispatch(changeLoader(false));
+
         if(error?.response?.data?.msg) {
             dispatch(setAlert(error?.response?.data?.msg, 'danger'));
         }
@@ -60,20 +67,23 @@ export const signup = (user) => async dispatch => {
     }
 }
 
-// LOAD USER
 export const loadUser = () => async dispatch => {
     if(localStorage.token){
         setAuthToken(localStorage.token);
     }
 
     try{
+        await dispatch(changeLoader(true));
         const res = await axios.get(`${process.env.REACT_APP_API_ROUTE}/auth/session`);
+        await dispatch(changeLoader(false));
 
         dispatch({
             type: AUTH.SESSION,
             payload: res.data.user
         });
-    } catch (error){         
+    } catch (error){   
+        await dispatch(changeLoader(false));     
+
         dispatch({
             type: AUTH.SESSION_ERROR
         });
@@ -87,7 +97,6 @@ export const modifyUser = (option) => dispatch => {
     });
 }
 
-// LOGOUT
 export const logout = () => dispatch => {
     dispatch({
         type: AUTH.LOGOUT

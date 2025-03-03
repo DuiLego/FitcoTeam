@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AUTH, HOME } from './types';
 
 import { setAlert } from './alert';
+import { changeLoader } from './loader';
 
 export const showProfile = (option) => dispatch => {
     dispatch({
@@ -19,7 +20,9 @@ export const editProfile = (profile) => async dispatch => {
     }
 
     try {
+        await dispatch(changeLoader(true));
         const res = await axios.post(`${process.env.REACT_APP_API_ROUTE}/home/edit_profile`, profile, config);
+        await dispatch(changeLoader(false));
 
         await dispatch({
             type: AUTH.SESSION,
@@ -33,6 +36,8 @@ export const editProfile = (profile) => async dispatch => {
 
         await dispatch(setAlert(res.data.msg, 'success'));
     } catch (error) {
+        await dispatch(changeLoader(false));
+
         if(error?.response?.data?.msg) {
             await dispatch(setAlert(error?.response?.data?.msg, 'danger'));
         }
@@ -47,13 +52,17 @@ export const getMessages = () => async dispatch => {
     }
 
     try{
+        await dispatch(changeLoader(true));
         const res = await axios.get(`${process.env.REACT_APP_API_ROUTE}/home/messages`, config);
+        await dispatch(changeLoader(false));
 
         await dispatch({
             type: HOME.FIND,
             payload: res.data.messages
         });
     } catch (error){ 
+        await dispatch(changeLoader(false));
+
         if(error?.response?.data?.msg) {
             await dispatch(setAlert(error?.response?.data?.msg, 'danger'));
         }

@@ -87,8 +87,10 @@ const Home = () => {
                 setConversationData((previousMessages) => {
                     const updatedMessages = previousMessages.map((current) => {
                         if (current.user.id == user.id) {
+                            console.log(user);
                             return {
                                 ...current,
+                                user: user,
                                 title: user.name,
                                 avatar: user.avatar
                             };
@@ -96,6 +98,8 @@ const Home = () => {
 
                         return current;
                     });
+
+                    console.log(updatedMessages);
             
                     return updatedMessages;
                 });
@@ -143,7 +147,7 @@ const Home = () => {
                                 <div className="col-md-12 py-4 text-center">
                                     <label className="image_profile_container">
                                         <div className="image_container">
-                                            <img id="profile_image" src={user?.url || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'} />
+                                            <img id="profile_image" src={user?.avatar || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'} />
                                         </div>
                                     </label>                                    
                                 </div>

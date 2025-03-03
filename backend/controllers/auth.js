@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 
-const { getList, uploadFile, getURL, deleteFile } = require('../helpers/files/files');
+const { getList, getURL } = require('../helpers/files/files');
 
 let { Users } = require('../models');
 
@@ -63,6 +63,20 @@ const loginAccount = async (req, res) => {
                 if (error) throw error;
 
                 delete user.password;
+
+                let url_profile_list = await getList({
+                    Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                    Prefix: user.id + '/profile',
+                });
+        
+                user.avatar = null;
+        
+                if(url_profile_list?.Contents.length > 0){
+                    user.avatar = await getURL({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Key: url_profile_list?.Contents[0].Key
+                    });
+                }
 
                 return res.status(200).send({  
                     msg: 'Sesión iniciada correctamente.',
@@ -166,6 +180,8 @@ const signupAccount = async (req, res) => {
             }, process.env.TOKEN_SECRET, { expiresIn: '24h' }, async (error, token) => {
                 if (error) throw error;
 
+                user.avatar = null;
+
                 return res.status(200).send({ 
                     msg: 'Cuenta creada correctamente.',
                     token,
@@ -219,10 +235,10 @@ const getAccount = async (req, res) => {
             Prefix: user.id + '/profile',
         });
 
-        user.url = null;
+        user.avatar = null;
 
         if(url_profile_list?.Contents.length > 0){
-            user.url = await getURL({
+            user.avatar = await getURL({
                 Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
                 Key: url_profile_list?.Contents[0].Key
             });

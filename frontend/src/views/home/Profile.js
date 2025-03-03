@@ -35,7 +35,7 @@ const Profile = () => {
                 email: user.email,
                 username: user.username,
                 password: null, 
-                image: user?.url || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'
+                image: user?.avatar || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'
             });
         }
     }
@@ -94,13 +94,12 @@ const Profile = () => {
 
     useEffect(() => {
         if(user){
-            console.log(user);
             setProfileData({
                 name: user.name,
                 email: user.email,
                 username: user.username,
                 password: null, 
-                image: user?.url || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'
+                image: user?.avatar || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'
             });
         }
     }, [user]);
