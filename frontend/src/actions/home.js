@@ -33,3 +33,24 @@ export const editProfile = (profile) => async dispatch => {
         }
     }
 }
+
+export const getMessages = () => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    try{
+        const res = await axios.get(`${process.env.REACT_APP_API_ROUTE}/home/messages`, config);
+
+        await dispatch({
+            type: HOME.FIND,
+            payload: res.data.messages
+        });
+    } catch (error){ 
+        if(error?.response?.data?.msg) {
+            await dispatch(setAlert(error?.response?.data?.msg, 'danger'));
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { MessageList } from 'react-chat-elements';
 import { Link } from 'react-router-dom';
@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 
 import { setAlert } from '../../actions/alert';
 import { logout } from '../../actions/auth';
-import { showProfile } from '../../actions/home';
+import { showProfile, getMessages } from '../../actions/home';
 
 import Profile from './Profile';
 
@@ -16,10 +16,15 @@ const Home = () => {
     const dispatch = useDispatch();
 
     const user = useSelector(state => state.auth.user);
+    const { messages } = useSelector(state => state.home);
+
+    const [conversationData, setConversationData] = useState([]);
 
     const [messageData, setMessageData] = useState({
         message: ''
     });
+
+    const containerRef = useRef(null);
 
     const logOut = () => {
         dispatch(logout());
@@ -45,7 +50,6 @@ const Home = () => {
 
     const handleSendMessage = async () => {
         if(messageData.message){
-            /* await dispatch(createMensajeAsesoria(messageData)); */
             socket.emit('sendMessage', { user, messageData });
 
             await setMessageData({
@@ -58,10 +62,41 @@ const Home = () => {
     }
 
     useEffect(() => {
+        dispatch(getMessages());
+    }, []);
+
+    useEffect(() => {
         if(user){
+            socket.on('receiveMessage', (message) => {
+                setConversationData([
+                    ...conversationData, 
+                    {
+                        ...message, 
+                        position: message.user.id == user.id ? 'right' : 'left'
+                    }
+                ]);
+            });
+
             socket.emit('register', user);
         }
     }, [user]);
+
+    useEffect(() => {
+        if(messages){
+            setConversationData(messages);
+        }
+    }, [messages]);
+
+    useEffect(() => {
+        if(containerRef && containerRef.current){
+            const element = containerRef.current;
+            element.scroll({
+                top: element.scrollHeight,
+                left: 0,
+                behavior: "smooth"
+            });
+        }
+    }, [containerRef, conversationData]);
 
     return (
         <Fragment>
@@ -116,20 +151,20 @@ const Home = () => {
                                 </div>
                             </div>
 
-                            <div className="body_conversacion">
+                            <div className="body_conversacion" ref={containerRef}>
                                 <MessageList
                                     id="chat" 
                                     className="message-list"
                                     lockable={true}
                                     toBottomHeight={'100%'}
-                                    dataSource={[]}
+                                    dataSource={conversationData}
                                 />
                             </div>
                             
                             <div className="footer_conversacion">
                                 <div className="contenedor_campo_envio">
                                     <input className="form-control campo_envio" type="text" placeholder="Escribe aquí..." onChange={e => onChangeMessage(e)} onKeyDown={handleKeyPress} value={messageData.message} />
-                                    <button className="btn btn-success boton_envio" type="button" ><i className="fa-solid fa-paper-plane" onClick={handleSendMessage}></i> Enviar</button>
+                                    <button className="btn btn-success boton_envio" type="button" onClick={handleSendMessage}><i className="fa-solid fa-paper-plane"></i> Enviar</button>
                                 </div>
                             </div>
                         </div>

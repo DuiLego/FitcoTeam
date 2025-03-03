@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 const { Op } = require('sequelize');
 const { check, validationResult } = require('express-validator');
 
-let { Users } = require('../models');
+let { Messages, Users } = require('../models');
 
 const editProfileValidation = [
     check('name', 'El nombre es requerido').exists(),
@@ -124,12 +124,122 @@ const editProfile = async (req, res) => {
     }
 }
 
-const sendMensaje = async ({user, message}) => {
+const getMessages = async (req, res) => {
+    const token = req.header('x-auth-token');
+    if (!token) {
+        return res.status(500).json({
+            msg: 'Algo salió mal, inténtalo más tarde.',
+            success: false
+        })
+    }
+
     try {
-        console.log(user);
-        console.log(message);
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        req.user = decoded.user;
+
+        let messages = await Messages.findAll({
+            include: [
+                {
+                    model: Users,
+                    as: 'sender', 
+                    attributes: [
+                        ['id', 'id'],
+                        ['name', 'name']
+                    ]
+                }
+            ],
+            order: [
+                ['date', 'DESC']
+            ]
+        });
+
+        let formated_messages = [];
+
+        for(var i = 0; i < messages.length; i++){
+            messages[i] = messages[i].get({ plain: true });
+
+            if(messages[i].sender){
+                formated_messages.push({
+                    id: messages[i].id, 
+                    user: {
+                        ...messages[i].sender,
+                        avatar: null
+                    }, 
+                    position: messages[i].sender.id == req.user.id ? 'right' : 'left', 
+                    type: 'text', 
+                    title: messages[i].sender.name, 
+                    text: messages[i].text, 
+                    date: messages[i].date
+                });
+            }
+        }
+
+        return res.status(200).send({
+            msg: 'Mensajes obtenidos correctamente.',
+            messages: formated_messages, 
+            success: true 
+        });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            msg: 'Algo salió mal, inténtalo más tarde.',
+            success: false
+        });
+    }
+}
+
+const sendMessage = async ({user, messageData}) => {
+    try {
+        if(!messageData?.message){
+            return {
+                'success': false,
+                'message': null
+            };
+        }
+
+        if(!user?.id){
+            return {
+                'success': false,
+                'message': null
+            };
+        }
+
+        let message = await Messages.create({
+            id_sender: user?.id, 
+            text: messageData?.message, 
+            date: new Date(),
+        });
+
+        if(message){
+            message = message.get({ plain: true });
+
+            return {
+                'success': true,
+                'message': {
+                    'id': message.id,
+                    'user': {
+                        'id': user.id,
+                        'name': user.name,
+                        'avatar': null
+                    },
+                    'position': null,
+                    'type': 'text',
+                    'title': user.name, 
+                    'text': message.text, 
+                    'date': message.date
+                }
+            };
+        }else{
+            return {
+                'success': false,
+                'message': null
+            };
+        }
+    } catch (error) {
+        return {
+            'success': false,
+            'message': null
+        };
     }
 }
 
@@ -137,5 +247,6 @@ module.exports = {
     editProfileValidation,
 
     editProfile, 
-    sendMensaje
+    getMessages, 
+    sendMessage
 };

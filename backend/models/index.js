@@ -1,5 +1,9 @@
+const Messages = require('./messages');
 const Users = require('./users');
 
-module.exports = { 
+Messages.belongsTo(Users, { as: 'sender', foreignKey: 'id_sender' });
+
+module.exports = {
+    Messages, 
     Users
 };
