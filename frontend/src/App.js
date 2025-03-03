@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 // Components
+import Alert from './components/layout/Alert';
 import NoMatch from './components/routing/NoMatch';
 import ValidateSession from './components/routing/ValidateSession';
 
@@ -10,6 +11,7 @@ import ValidateSession from './components/routing/ValidateSession';
 
 //Authtentication
 import Login from './views/auth/Login';
+import Signup from './views/auth/Signup';
 
 // Redux
 import store from './store';
@@ -30,10 +32,15 @@ function App() {
 			<BrowserRouter>
 				<Fragment>
 					<section className="container-fluid principal-section">
+						<Alert></Alert>
+						
 						<Routes>
 							{/* Log-in */}
 							<Route exact path="/" element={<ValidateSession><Login /></ValidateSession>}/>
 							<Route exact path="/login" element={<ValidateSession><Login /></ValidateSession>}/>
+
+							{/* Sign-up */}
+							<Route exact path="/signup" element={<ValidateSession><Signup /></ValidateSession>}/>
 
 							{/* Not found */}
 							<Route path="*" element={<NoMatch />}/>

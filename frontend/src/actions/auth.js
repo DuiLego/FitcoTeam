@@ -2,16 +2,18 @@ import axios from 'axios';
 
 import setAuthToken from '../utils/setAuthToken';
 
+import { setAlert } from './alert';
+
 import { AUTH } from './types';
 
 // LOGIN USER
-export const login = (usuario) => async dispatch => {
+export const login = (user) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
         }
     }
-    const body = JSON.stringify(usuario);
+    const body = JSON.stringify(user);
 
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_ROUTE}/auth/login`, body, config);
@@ -21,12 +23,39 @@ export const login = (usuario) => async dispatch => {
             payload: res.data
         });
     } catch (error) {
-        /* if(error?.response?.data?.msg) {
+        if(error?.response?.data?.msg) {
             dispatch(setAlert(error?.response?.data?.msg, 'danger'));
-        } */
+        }
 
         dispatch({
             type: AUTH.LOGIN_ERROR
+        });
+    }
+}
+
+// SIGNUP USER
+export const signup = (user) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    const body = JSON.stringify(user);
+
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_API_ROUTE}/auth/signup`, body, config);
+
+        dispatch({
+            type: AUTH.SIGNUP,
+            payload: res.data
+        });
+    } catch (error) {
+        if(error?.response?.data?.msg) {
+            dispatch(setAlert(error?.response?.data?.msg, 'danger'));
+        }
+
+        dispatch({
+            type: AUTH.SIGNUP_ERROR
         });
     }
 }
