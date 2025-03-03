@@ -132,7 +132,7 @@ const signupAccount = async (req, res) => {
             });
         }
 
-        let registrer_data = {
+        let register_data = {
             name, 
             email, 
             username, 
@@ -140,7 +140,7 @@ const signupAccount = async (req, res) => {
 
         if(password){
             const salt = await bcryptjs.genSaltSync(13);
-            registrer_data.password = await bcryptjs.hashSync(password, salt);
+            register_data.password = await bcryptjs.hashSync(password, salt);
         }else{
             return res.status(400).send({  
                 msg: 'La contraseña es necesaria.',
@@ -148,7 +148,7 @@ const signupAccount = async (req, res) => {
             });
         }
 
-        user = await Users.create(registrer_data);
+        user = await Users.create(register_data);
 
         if(!user){
             return res.status(400).send({  

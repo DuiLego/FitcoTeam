@@ -29,10 +29,12 @@ app.use(fileUpload({
 
 // Routes files
 let auth = require('../routes/auth');
+let home = require('../routes/home');
 
 // Routes web
 app.get('/', (req, res) => res.send(`API${ENVIRONMENT} de Fitco - Team`));
 app.use('/auth', auth);
+app.use('/home', home);
 
 // Server init
 server.listen(PORT, function () {

@@ -14,3 +14,10 @@ export const AUTH = {
     SESSION_ERROR: 'GET_USER_ERROR', 
     LOGOUT: 'LOGOUT'
 };
+
+// Home
+export const HOME = {
+    FIND: 'FIND_MESSAGES',
+    SHOW_PROFILE: 'SHOW_PROFILE',
+    EDIT_PROFILE: 'EDIT_PROFILE'
+};

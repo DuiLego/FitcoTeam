@@ -23,16 +23,15 @@ const Login = () => {
         })
     }
 
-    const submitLogin = () => {
-        dispatch(login(loginData));
-    }
-
-    /* Funciones generales */
     const onViewPassword = (origen) => {
         let loginInputType = document.getElementById(origen).type;
         
         if(loginInputType == 'password')document.getElementById(origen).type = 'text';
         else document.getElementById(origen).type = 'password';
+    }
+
+    const submitLogin = () => {
+        dispatch(login(loginData));
     }
 
     useEffect(() => {
