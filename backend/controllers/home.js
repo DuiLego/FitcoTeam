@@ -124,8 +124,18 @@ const editProfile = async (req, res) => {
     }
 }
 
+const sendMensaje = async ({user, message}) => {
+    try {
+        console.log(user);
+        console.log(message);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     editProfileValidation,
 
-    editProfile
+    editProfile, 
+    sendMensaje
 };

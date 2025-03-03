@@ -3,6 +3,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const http = require('http');
+const socketIO = require('socket.io');
 const dotenv = require('dotenv').config();
 
 const { connectDB } = require('./db.js');
@@ -35,6 +36,16 @@ let home = require('../routes/home');
 app.get('/', (req, res) => res.send(`API${ENVIRONMENT} de Fitco - Team`));
 app.use('/auth', auth);
 app.use('/home', home);
+
+// Sockets communication
+module.exports.io = socketIO(server, {
+	cors: {
+    	origin: '*',
+    	methods: ['GET', 'POST']
+    }
+});
+
+require('./sockets');
 
 // Server init
 server.listen(PORT, function () {

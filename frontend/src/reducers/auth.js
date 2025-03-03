@@ -5,7 +5,7 @@ import setAuthToken from '../utils/setAuthToken';
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: false,
-    user: {}
+    user: null
 }
 
 export default (state = initialState, action) => {
