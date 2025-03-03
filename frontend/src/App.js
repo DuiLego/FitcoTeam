@@ -3,9 +3,12 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 // Components
+import NoMatch from './components/routing/NoMatch';
 import ValidateSession from './components/routing/ValidateSession';
 
-// Login
+// Views
+
+//Authtentication
 import Login from './views/auth/Login';
 
 // Redux
@@ -26,14 +29,14 @@ function App() {
 		<Provider store={store}>
 			<BrowserRouter>
 				<Fragment>
-          <Routes>
-            {/* Log-in */}
-            <Route exact path="/" element={<ValidateSession><Login /></ValidateSession>}/>
-            <Route exact path="/login" element={<ValidateSession><Login /></ValidateSession>}/>
+					<Routes>
+						{/* Log-in */}
+						<Route exact path="/" element={<ValidateSession><Login /></ValidateSession>}/>
+						<Route exact path="/login" element={<ValidateSession><Login /></ValidateSession>}/>
 
-            {/* Not found */}
-            <Route path="*" element={<NoMatch />}/>
-          </Routes>
+						{/* Not found */}
+						<Route path="*" element={<NoMatch />}/>
+					</Routes>
 				</Fragment>
 			</BrowserRouter>
 		</Provider>
