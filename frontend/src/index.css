@@ -17,3 +17,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.centrado-vertical {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.logo-header {
+  height: 8vw;
+  min-height: 50px;
+  max-height: 80px;
+}
+
+.view-password {
+  padding: 0.39rem 0.70rem !important;
+  border-radius: 0 25% 25% 0 !important;
+  height: 100%;
+}

@@ -29,14 +29,16 @@ function App() {
 		<Provider store={store}>
 			<BrowserRouter>
 				<Fragment>
-					<Routes>
-						{/* Log-in */}
-						<Route exact path="/" element={<ValidateSession><Login /></ValidateSession>}/>
-						<Route exact path="/login" element={<ValidateSession><Login /></ValidateSession>}/>
+					<section className="container-fluid principal-section">
+						<Routes>
+							{/* Log-in */}
+							<Route exact path="/" element={<ValidateSession><Login /></ValidateSession>}/>
+							<Route exact path="/login" element={<ValidateSession><Login /></ValidateSession>}/>
 
-						{/* Not found */}
-						<Route path="*" element={<NoMatch />}/>
-					</Routes>
+							{/* Not found */}
+							<Route path="*" element={<NoMatch />}/>
+						</Routes>
+					</section>
 				</Fragment>
 			</BrowserRouter>
 		</Provider>

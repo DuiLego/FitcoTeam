@@ -1,5 +1,7 @@
 // Auth
 export const AUTH = {
-    SESION: 'GET_USER',
-    SESION_ERROR: 'GET_USER_ERROR'
+    LOGIN: 'LOGIN',
+    LOGIN_ERROR: 'LOGIN_ERROR',
+    SESSION: 'GET_USER',
+    SESSION_ERROR: 'GET_USER_ERROR'
 };
