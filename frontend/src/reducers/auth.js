@@ -26,6 +26,7 @@ export default (state = initialState, action) => {
         case AUTH.LOGIN_ERROR:
         case AUTH.SIGNUP_ERROR:
         case AUTH.SESSION_ERROR: 
+        case AUTH.LOGOUT: 
             localStorage.removeItem('token');
             
             return {

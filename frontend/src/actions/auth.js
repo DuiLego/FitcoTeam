@@ -79,3 +79,10 @@ export const loadUser = () => async dispatch => {
         });
     }
 }
+
+// LOGOUT
+export const logout = () => dispatch => {
+    dispatch({
+        type: AUTH.LOGOUT
+    });
+}
