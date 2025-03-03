@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
@@ -18,8 +18,15 @@ const Profile = () => {
         name: null,
         email: null,
         username: null,
-        password: null
+        password: null, 
+        image: null
     });
+
+    const [profilePicture, setProfilePicture] = useState({
+        img: undefined,
+    });
+
+    let img = createRef();
 
     const handleAbrir = () => {
         if(user){
@@ -27,9 +34,16 @@ const Profile = () => {
                 name: user.name,
                 email: user.email,
                 username: user.username,
-                password: null
+                password: null, 
+                image: user?.url || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'
             });
         }
+    }
+
+    const handleChangeImg = () => {
+        setProfilePicture({
+            ...profilePicture, img: img.current.files[0]
+        })
     }
 
     const handleInputChange = ({ target }) => {
@@ -54,6 +68,7 @@ const Profile = () => {
             formData.append('email', profileData.email);
             formData.append('username', profileData.username);
             formData.append('password', profileData.password);
+            formData.append('profile', profilePicture.img);
 
             await setStatusProcesar(true);
             await dispatch(editProfile(formData));
@@ -79,11 +94,13 @@ const Profile = () => {
 
     useEffect(() => {
         if(user){
+            console.log(user);
             setProfileData({
                 name: user.name,
                 email: user.email,
                 username: user.username,
-                password: null
+                password: null, 
+                image: user?.url || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'
             });
         }
     }, [user]);
@@ -95,6 +112,15 @@ const Profile = () => {
             </Modal.Header>
             <Modal.Body>
                 <div className="row">
+                    <div className="col-12 form-group text-center">
+                        <label htmlFor="photo-upload" className="custom-file-upload fas">
+                            <div className="img-wrap img-upload">
+                                <img id="img-photo" htmlFor="photo-upload" src={profilePicture.img ? URL.createObjectURL(profilePicture.img) : profileData.image}/>
+                            </div>
+                            <input id="photo-upload" type="file" accept="image/*" ref={img} onChange={handleChangeImg}/> 
+                        </label>
+                    </div>
+
                     <div className="col-md-6 form-group mb-3">
                         <div className="input-group">
                             <div className="form-floating">

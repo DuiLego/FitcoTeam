@@ -40,13 +40,13 @@ code {
 
 /* Chat */
 
-.chat_general {
+.general_chat {
   display: flex;
   flex-direction: column;
   min-height: 100%;
 }
 
-.contenedor_chat {
+.chat_container {
   align-items: center;
   background-color: #fff;
   color: #000;
@@ -58,13 +58,13 @@ code {
   width: 100%;
 }
 
-.seccion_conversaciones {
+.conversations_section {
   border-right: solid #e7e7e7;
   height: 100%;
   width: 20%;
 }
 
-.perfil_conversacion {
+.profile_conversation {
   border-top: solid #e7e7e7;
   height: 100%;
   overflow-y: auto;
@@ -74,72 +74,21 @@ code {
   word-break: break-all;
 }
 
-.seccion_conversacion {
+#logo_image {
+  width: 70%;
+}
+
+.conversation_section {
   height: 100%;
   width: 80%;
 }
 
-.contenedor_conversacion {
+.conversation_container {
   height: 100%;
   width: 100%;
 }
 
-.contenedor_sin_conversacion {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #dcf7fa;
-}
-
-.header_conversacion {
-  align-items: center;
-  border-bottom: solid #e7e7e7;
-  display: flex;
-  height: 15%;
-  padding: 15px;
-}
-
-.contenedor_imagen_conversacion {
-  border-radius: 100%;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.contenedor_datos_conversacion {
-  width: 80%;
-}
-
-.imagen_conversacion {
-  width: 60px;
-  height: 60px;
-  -webkit-border-radius: 60px;
-  -webkit-background-clip: padding-box;
-  -moz-border-radius: 60px;
-  -moz-background-clip: padding;
-  border-radius: 60px;
-  background-clip: padding-box;
-  margin: 7px 0 0 5px;
-  float: left;
-  background-size: cover;
-  background-position: center center;
-}
-
-.titulo_conversacion {
-  font-weight: 700;
-  margin-left: 2%;
-}
-
-.subtitulo_conversacion {
-  display: block;
-  font-size: small;
-  margin-left: 2%;
-}
-
-.body_conversacion {
+.conversation_body {
   height: 70%;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -148,14 +97,14 @@ code {
   width: 100%;
 }
 
-.footer_conversacion {
+.footer_conversation {
   align-items: flex-start;
   display: flex;
   height: 15%;
   width: 100%;
 }
 
-.contenedor_campo_envio {
+.send_field_container {
   align-items: center;
   background: #fff;
   box-sizing: border-box;
@@ -165,7 +114,7 @@ code {
   padding: 20px;
 }
 
-.campo_envio {
+.field_send {
   border: none;
   border-radius: 5px;
   box-sizing: border-box;
@@ -179,46 +128,40 @@ code {
 }
 
 @media only screen and (max-width: 600px) {
-  .contenedor_chat {
+  .chat_container {
       padding-right: 20px;
       height: 80vh;
   }
 
-  .seccion_conversaciones {
+  .conversations_section {
       visibility: hidden;
       width: 0%;
   }
   
-  .seccion_conversacion {
+  .conversation_section {
       width: 100%;
   }
 }
 
 @media only screen and (min-width: 601px) and (max-width: 950px) {
-  .seccion_conversaciones {
+  .conversations_section {
       width: 30%;
   }
   
-  .seccion_conversacion {
+  .conversation_section {
       width: 70%;
   }
 }
 
 @media only screen and (min-width: 601px) {
-  .header_conversacion {
-      visibility: hidden;
-      padding: 0px;
-      height: 0%;
-  }
-
-  .body_conversacion {
+  .conversation_body {
       height: 85%;
   }
 }
 
-/* Perfil */
+/* Profile */
 
-.contenedor_imagen_perfil {
+.image_profile_container {
   border-radius: 50%;
   display: inline-block;
   position: relative;
@@ -227,7 +170,7 @@ code {
   border: 5px solid #00cdc1;
 }
 
-.contenedor_imagen{
+.image_container{
   position: relative;
   width: 200px;
   height: 200px;
@@ -236,7 +179,60 @@ code {
   background-color: #fff;
 }
 
-#imagen_perfil {
+#profile_image {
+  width: auto;
+  height: 100%;
+}
+
+/* Image profile */
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  padding: 0px;
+  cursor: pointer;
+  background: #fff;
+  margin-bottom: 25px;
+  border: 5px solid #00cdc1;
+}
+
+.img-wrap{
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.img-upload:before{
+  content: "";
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900;
+  font-size: 90px;
+  position: absolute;
+  padding-top: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #00cdc1;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #fff;
+}
+
+.img-upload:hover:before{
+  opacity: 1;
+}
+
+#img-photo {
   width: auto;
   height: 100%;
 }

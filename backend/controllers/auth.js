@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 
+const { getList, uploadFile, getURL, deleteFile } = require('../helpers/files/files');
+
 let { Users } = require('../models');
 
 const loginAccountValidation = [
@@ -211,6 +213,20 @@ const getAccount = async (req, res) => {
         }
 
         user = user.get({ plain: true });
+
+        let url_profile_list = await getList({
+            Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+            Prefix: user.id + '/profile',
+        });
+
+        user.url = null;
+
+        if(url_profile_list?.Contents.length > 0){
+            user.url = await getURL({
+                Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                Key: url_profile_list?.Contents[0].Key
+            });
+        }
 
         return res.status(200).json({
             user, 

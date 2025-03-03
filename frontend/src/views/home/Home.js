@@ -89,7 +89,8 @@ const Home = () => {
                         if (current.user.id == user.id) {
                             return {
                                 ...current,
-                                title: user.name
+                                title: user.name,
+                                avatar: user.avatar
                             };
                         }
 
@@ -134,23 +135,17 @@ const Home = () => {
 
             <Profile />
 
-            <div className="chat_general">
-                <div className="contenedor_chat">
-                    <div className="seccion_conversaciones">
-                        <div className="perfil_conversacion">
-                            <div className="col-md-12 px-0 row mx-0">
+            <div className="general_chat">
+                <div className="chat_container">
+                    <div className="conversations_section">
+                        <div className="profile_conversation">
+                            <div className="col-md-12 px-0 row mx-0 h-100 d-flex flex-column justify-content-between">
                                 <div className="col-md-12 py-4 text-center">
-                                    <label className="contenedor_imagen_perfil">
-                                        <div className="contenedor_imagen">
-                                            <img id="imagen_perfil" src={process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'} />
+                                    <label className="image_profile_container">
+                                        <div className="image_container">
+                                            <img id="profile_image" src={user?.url || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png'} />
                                         </div>
-                                    </label>
-
-                                    <div className="mt-3 mb-5 d-flex justify-content-center">
-                                        <Link className="btn btn-danger mx-1" onClick={logOut} to="/"><i className="fa-solid fa-right-from-bracket"></i> Salir</Link>
-
-                                        <button className="btn btn-primary mx-1" type="button" onClick={editProfile}><i className="fa-solid fa-user-gear"></i> Editar perfil</button>
-                                    </div>
+                                    </label>                                    
                                 </div>
 
                                 <div className="col-md-12 text-center">
@@ -167,49 +162,44 @@ const Home = () => {
                                     <label className="fw-bold">Correo</label>
                                     <p>{user ? user.email : 'Sin definir'}</p>
                                 </div>
+
+                                <div className="col-md-12 text-center mt-auto">
+                                    <img id="logo_image" src={process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/logo-color.png'} />
+                                    <div className="mt-3 mb-5 d-flex justify-content-center">
+                                        <Link className="btn btn-danger mx-1" onClick={logOut} to="/"><i className="fa-solid fa-right-from-bracket"></i> Salir</Link>
+
+                                        <button className="btn btn-primary mx-1" type="button" onClick={editProfile}><i className="fa-solid fa-user-gear"></i> Editar perfil</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="seccion_conversacion">
-                        <div className="contenedor_conversacion">
-                            <div className="header_conversacion">
-                                <div className="contenedor_imagen_conversacion">
-                                    <div className="imagen_conversacion"></div>
-                                </div>
-                                <div className="contenedor_datos_conversacion">
-                                    <label className="titulo_conversacion">Nombre</label>
-                                </div>
-                            </div>
+                    <div className="conversation_section">
+                        <div className="conversation_container">
 
-                            <div className="body_conversacion" ref={containerRef}>
-                                {/* <MessageList
-                                    id="chat" 
-                                    className="message-list"
-                                    lockable={true}
-                                    toBottomHeight={'100%'}
-                                    dataSource={[]}
-                                > */}
-                                    {
-                                        conversationData?.map((message) => (
-                                            <MessageBox
-                                                key={message.id}
-                                                type={message.type}
-                                                position={message.position}
-                                                text={message.text}
-                                                title={message.user.name}
-                                                date={message.date}
-                                                avatar={message.user.id != user.id ? process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png' : null}
-                                            />
-                                        ))
-                                    }
-                                {/* </MessageList> */}
+                            <div className="conversation_body" ref={containerRef}>
+                                {
+                                    conversationData?.map((message) => (
+                                        <MessageBox
+                                            key={message.id}
+                                            id={message.id}
+                                            user={message.user}
+                                            position={message.position}
+                                            type={message.type}
+                                            title={message.user.name}
+                                            text={message.text}
+                                            date={message.date}
+                                            avatar={message.user.id != user?.id ? (message.user.avatar || process.env.REACT_APP_PUBLIC_ROUTE + '/assets/images/avatar.png') : null}
+                                        />
+                                    ))
+                                }
                             </div>
                             
-                            <div className="footer_conversacion">
-                                <div className="contenedor_campo_envio">
-                                    <input className="form-control campo_envio" type="text" placeholder="Escribe aquí..." onChange={e => onChangeMessage(e)} onKeyDown={handleKeyPress} value={messageData.message} />
-                                    <button className="btn btn-success boton_envio" type="button" onClick={handleSendMessage}><i className="fa-solid fa-paper-plane"></i> Enviar</button>
+                            <div className="footer_conversation">
+                                <div className="send_field_container">
+                                    <input className="form-control field_send" type="text" placeholder="Escribe aquí..." onChange={e => onChangeMessage(e)} onKeyDown={handleKeyPress} value={messageData.message} />
+                                    <button className="btn btn-success button_send" type="button" onClick={handleSendMessage}><i className="fa-solid fa-paper-plane"></i> Enviar</button>
                                 </div>
                             </div>
                         </div>

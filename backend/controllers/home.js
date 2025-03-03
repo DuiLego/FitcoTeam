@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const { Op } = require('sequelize');
 const { check, validationResult } = require('express-validator');
+const path = require('path');
+
+const { getList, uploadFile, getURL, deleteFile } = require('../helpers/files/files');
 
 let { Messages, Users } = require('../models');
 
@@ -104,16 +107,84 @@ const editProfile = async (req, res) => {
             user = user.get({ plain: true });
             delete user.password;
 
+            if(req.files != null){
+                if('profile' in req.files){
+                    let extension_file = path.extname(req.files.profile.name);
+
+                    await uploadFile({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Key: user.id + '/' + 'profile' + extension_file,
+                        Body: req.files.profile.data
+                    });
+                }
+            }
+
+            let url_profile_list = await getList({
+                Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                Prefix: user.id + '/profile',
+            });
+
+            user.url = null;
+
+            if(url_profile_list?.Contents.length > 0){
+                user.url = await getURL({
+                    Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                    Key: url_profile_list?.Contents[0].Key
+                });
+            }
+
             return res.status(200).json({
                 msg: 'Perfil editado correctamente.',
                 user, 
                 success: true
             });
         }else{
-            return res.status(400).json({
-                msg: 'El perfil no fue actualizado.',
-                success: false
-            });
+            if(req.files != null){
+                if('profile' in req.files){
+                    user = await Users.findOne({ where: { id: req.user.id } });
+
+                    user = user.get({ plain: true });
+                    delete user.password;
+                    
+                    let extension_file = path.extname(req.files.profile.name);
+
+                    await uploadFile({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Key: user.id + '/' + 'profile' + extension_file,
+                        Body: req.files.profile.data
+                    });
+
+                    let url_profile_list = await getList({
+                        Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                        Prefix: user.id + '/profile',
+                    });
+        
+                    user.url = null;
+        
+                    if(url_profile_list?.Contents.length > 0){
+                        user.url = await getURL({
+                            Bucket: process.env.AWS_S3_ENVIRONMENT + 'ft-users',
+                            Key: url_profile_list?.Contents[0].Key
+                        });
+                    }
+
+                    return res.status(200).json({
+                        msg: 'Perfil editado correctamente.',
+                        user, 
+                        success: true
+                    });
+                }else{
+                    return res.status(400).json({
+                        msg: 'El perfil no fue actualizado.',
+                        success: false
+                    });
+                }
+            }else{
+                return res.status(400).json({
+                    msg: 'El perfil no fue actualizado.',
+                    success: false
+                });
+            }
         }
     } catch (error) {
         console.log(error);
