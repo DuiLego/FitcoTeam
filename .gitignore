@@ -1,0 +1,124 @@
+# Root directory
+# Ignorar archivos y directorios comunes a ambos frontend y backend
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System files
+.DS_Store
+.node_repl_history
+.tern-port
+
+
+# ================================
+# Front-End (dentro de la carpeta frontend/)
+# ================================
+
+# dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend.pnp.js
+
+# testing
+/frontend/coverage
+
+# production build
+/frontend/build
+
+# miscellaneous
+/frontend/.DS_Store
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# Environment files
+/frontend/.env
+/frontend/.env.test
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+
+# ================================
+# Back-End (dentro de la carpeta backend/)
+# ================================
+
+# Environment files
+/backend/.env
+/backend/.env.test
+/backend/.env.local
+/backend/.env.development.local
+/backend/.env.test.local
+/backend/.env.production.local
+
+# Logs
+/backend/logs
+/backend/*.log
+/backend/npm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+/backend/lerna-debug.log*
+
+# Diagnostic reports (Node.js)
+/backend/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+/backend/pids
+/backend/*.pid
+/backend/*.seed
+/backend/*.pid.lock
+
+# Coverage tools (istanbul, nyc, etc.)
+/backend/coverage
+/backend/*.lcov
+/backend/.nyc_output
+
+# Grunt files
+/backend/.grunt
+
+# Bower files
+/backend/bower_components
+
+# Node.js build files
+/backend/.lock-wscript
+/backend/build/Release
+
+# Dependency directories
+/backend/node_modules/
+/backend/jspm_packages/
+
+/backend/typings/
+
+# TypeScript files
+/backend/*.tsbuildinfo
+
+# Optional npm cache
+/backend/.npm
+
+# Optional eslint cache
+/backend/.eslintcache
+
+# Microbundle cache
+/backend/.rpt2_cache/
+/backend/.rts2_cache_cjs/
+/backend/.rts2_cache_es/
+/backend/.rts2_cache_umd/
+
+# Yarn Integrity file
+/backend/.yarn-integrity
+
+# Serverless directories (si usas Serverless Framework)
+/backend/.serverless/
+
+# FuseBox cache
+/backend/.fusebox/
+
+# DynamoDB Local files
+/backend/.dynamodb/
+
+# TernJS port file
+/backend/.tern-port
